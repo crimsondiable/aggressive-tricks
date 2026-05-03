@@ -590,12 +590,10 @@
     <div class="picker-tabs">
       <button class="picker-tab active" id="ptab-trick" onclick="switchPickerTab('trick')">Trick</button>
       <button class="picker-tab" id="ptab-mod" onclick="switchPickerTab('mod')">Rot.</button>
-      <button class="picker-tab" id="ptab-grab" onclick="switchPickerTab('grab')">Grab</button>
       <button class="picker-tab" id="ptab-var" onclick="switchPickerTab('var')">Varianti</button>
     </div>
     <div id="picker-trick-list"></div>
     <div id="picker-mod-grid" style="display:none" class="mod-grid"></div>
-    <div id="picker-grab-grid" style="display:none" class="mod-grid"></div>
     <div id="picker-var-form" style="display:none;flex-direction:column;gap:8px">
       <input type="text" id="var-input" class="cmp-input-field" placeholder="Scrivi variante…" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"/>
       <button class="cmp-go" style="width:100%;padding:10px" onclick="pickVariant()">+ Aggiungi</button>
@@ -677,17 +675,6 @@ const MODS = [
   {id:'fs',       name:'Frontside'},
 ];
 
-const GRABS = [
-  {id:'g_mute',    name:'Mute'},
-  {id:'g_indy',    name:'Indy'},
-  {id:'g_stale',   name:'Stalefish'},
-  {id:'g_melon',   name:'Melon'},
-  {id:'g_japan',   name:'Japan'},
-  {id:'g_rocket',  name:'Rocket'},
-  {id:'g_dbone',   name:'D-Bone'},
-  {id:'g_madonna', name:'Madonna'},
-  {id:'g_christ',  name:'Christ Air'},
-];
 
 const DIFFS   = ['beginner','intermediate','advanced','expert'];
 const DLBL    = {beginner:'Base',intermediate:'Medio',advanced:'Avanzato',expert:'Expert'};
@@ -1173,24 +1160,21 @@ let pickerTab='trick';
 
 function openPicker(){
   pickerTab='trick';
-  ['trick','mod','grab','var'].forEach(t=>document.getElementById('ptab-'+t)?.classList.toggle('active',t==='trick'));
+  ['trick','mod','var'].forEach(t=>document.getElementById('ptab-'+t)?.classList.toggle('active',t==='trick'));
   renderPickerTricks();
   document.getElementById('picker-trick-list').style.display='';
   document.getElementById('picker-mod-grid').style.display='none';
-  document.getElementById('picker-grab-grid').style.display='none';
   document.getElementById('picker-var-form').style.display='none';
   document.getElementById('overlay-picker').classList.add('open');
 }
 
 function switchPickerTab(tab){
   pickerTab=tab;
-  ['trick','mod','grab','var'].forEach(t=>document.getElementById('ptab-'+t)?.classList.toggle('active',t===tab));
+  ['trick','mod','var'].forEach(t=>document.getElementById('ptab-'+t)?.classList.toggle('active',t===tab));
   document.getElementById('picker-trick-list').style.display=tab==='trick'?'':'none';
   document.getElementById('picker-mod-grid').style.display=tab==='mod'?'':'none';
-  document.getElementById('picker-grab-grid').style.display=tab==='grab'?'':'none';
   document.getElementById('picker-var-form').style.display=tab==='var'?'flex':'none';
   if(tab==='mod')renderPickerMods();
-  if(tab==='grab')renderPickerGrabs();
 }
 
 function renderPickerTricks(){
@@ -1230,17 +1214,6 @@ function pickMod(id,name){
   renderBuilderSeq();
 }
 
-function renderPickerGrabs(){
-  document.getElementById('picker-grab-grid').innerHTML=GRABS.map(g=>
-    `<button class="mod-chip" onclick="pickGrab('${g.id}','${g.name}')">${g.name}</button>`
-  ).join('');
-}
-
-function pickGrab(id,name){
-  builderItems.push({type:'grab',id,name});
-  document.getElementById('overlay-picker').classList.remove('open');
-  renderBuilderSeq();
-}
 
 function pickVariant(){
   const inp=document.getElementById('var-input');
