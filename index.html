@@ -197,7 +197,8 @@
     .rival-code{font-size:8.5px;font-family:monospace;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.5px}
     .rival-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 2px;-webkit-tap-highlight-color:transparent;transition:color .13s}
     .rival-del:active{color:#f87171}
-    .add-rival-row{display:flex;gap:6px;padding-top:8px}
+    .add-rival-row{display:flex;flex-direction:column;gap:6px;padding-top:8px}
+    .add-rival-fields{display:flex;gap:6px}
     .cmp-input-field{flex:1;background:rgba(0,0,0,.18);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-size:11px;font-family:monospace;padding:7px 10px;outline:none;letter-spacing:1px;-webkit-appearance:none;transition:border-color .18s}
     .cmp-input-field:focus{border-color:var(--acc)}
     .cmp-go{background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;border-radius:var(--rs);color:#fff;font-size:11px;font-weight:800;padding:7px 12px;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden}
@@ -502,10 +503,15 @@
     <div class="cmp-lbl">Bladers</div>
     <div id="rivals-list"></div>
     <div class="add-rival-row">
-      <input id="rival-input" class="cmp-input-field" type="text" maxlength="30"
-             placeholder="Incolla codice blader…" autocomplete="off" autocorrect="off"
-             autocapitalize="none" spellcheck="false"/>
-      <button class="cmp-go" onclick="addRival()">+ Aggiungi</button>
+      <input id="rival-name-input" class="cmp-input-field" type="text" maxlength="24"
+             placeholder="Nome blader…" autocomplete="off" autocorrect="off"
+             autocapitalize="words" spellcheck="false" style="font-family:inherit;letter-spacing:0"/>
+      <div class="add-rival-fields">
+        <input id="rival-input" class="cmp-input-field" type="text" maxlength="30"
+               placeholder="Incolla codice…" autocomplete="off" autocorrect="off"
+               autocapitalize="none" spellcheck="false"/>
+        <button class="cmp-go" onclick="addRival()">+ Aggiungi</button>
+      </div>
     </div>
   </div>
   <div class="cmp-actions" id="cmp-actions" style="display:none">
@@ -865,14 +871,16 @@ function renderRivalsList(){
 
 function addRival(){
   const inp=document.getElementById('rival-input');
+  const nameInp=document.getElementById('rival-name-input');
   const code=inp.value.trim().toLowerCase();
   if(!decodeProgress(code)){
     inp.style.borderColor='#ef4444';
     setTimeout(()=>{inp.style.borderColor=''},1500);
     return;
   }
-  rivals.push({id:'r_'+Date.now(),code,label:`Blader ${rivals.length+1}`});
-  saveRivals();inp.value='';
+  const name=nameInp.value.trim()||`Blader ${rivals.length+1}`;
+  rivals.push({id:'r_'+Date.now(),code,label:name});
+  saveRivals();inp.value='';nameInp.value='';
   renderRivalsList();
 }
 
